@@ -18,6 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Remotion.Configuration.TypeDiscovery;
 using Remotion.Logging;
 using Remotion.Reflection.TypeDiscovery;
 using System.Linq;
@@ -30,6 +31,9 @@ namespace TypeDiscovery
     private static void Main ()
     {
       LogManager.Initialize ();
+
+      // ConfigureTypeDiscovery ();
+      // ConfigureTypeDiscoveryService ();
 
       var typeDiscoveryService = ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService ();
       Console.WriteLine ("Type discovery service type: {0}", typeDiscoveryService.GetType ());
@@ -46,6 +50,28 @@ namespace TypeDiscovery
 
       Console.WriteLine ("Types (first 100): ");
       Console.WriteLine (SeparatedStringBuilder.Build (", ", types.Cast<Type> ().Take (100), t => t.Name));
+    }
+
+    private static void ConfigureTypeDiscovery()
+    {
+      var configuration = new TypeDiscoveryConfiguration ();
+      configuration.Mode = TypeDiscoveryMode.SpecificRootAssemblies;
+      
+      var nameSpecification = new ByNameRootAssemblyElement { Name = "Library1", IncludeReferencedAssemblies = true };
+      configuration.SpecificRootAssemblies.ByName.Add (nameSpecification);
+
+      var includePattern = new ByFileIncludeRootAssemblyElement { FilePattern = "Library*.dll" };
+      configuration.SpecificRootAssemblies.ByFile.Add (includePattern);
+
+      var excludePattern = new ByFileExcludeRootAssemblyElement { FilePattern = "Library2.dll" };
+      configuration.SpecificRootAssemblies.ByFile.Add (excludePattern);
+
+      TypeDiscoveryConfiguration.SetCurrent (configuration);
+    }
+
+    private static void ConfigureTypeDiscoveryService ()
+    {
+      ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService = new CustomTypeDiscoveryService ();
     }
   }
 }
