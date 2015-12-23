@@ -68,6 +68,9 @@
     <None Include="..\lib\TypeDiscoveryConfiguration.xsd">
       <Link>TypeDiscoveryConfiguration.xsd</Link>
     </None>
+    <None Include="..\MIT.licenseheader">
+      <Link>MIT.licenseheader</Link>
+    </None>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
